@@ -1,8 +1,8 @@
 #addin "nuget:?package=Cake.SquareLogo"
 //#addin "nuget:?package=Cake.GithubUtility"
 
-var target = Argument("target", "Create-Nuget-Package");
-var npi = EnvironmentVariable("npi");
+var target = Argument("target", "Default");
+var npi = EnvironmentVariable("npi_watch" );
 
 //Task("Create-Logo").Does(() => {
 //    var settings = new LogoSettings { Background = "Green" };
@@ -15,6 +15,7 @@ Task("Publish-Nuget")
     .Does(() => {
         var nupkg = new DirectoryInfo("./nuget").GetFiles("*.nupkg").LastOrDefault();
         var package = nupkg.FullName;
+        Information( $"apikey: {npi}" );
         NuGetPush(package, new NuGetPushSettings {
             Source = "https://www.nuget.org/api/v2/package",
             ApiKey = npi
@@ -50,12 +51,12 @@ Task("Create-Nuget-Package")
         var version = ParseAssemblyInfo("./Cake.Watch/Properties/AssemblyInfo.cs").AssemblyVersion;
         var settings   = new NuGetPackSettings {
                                         //ToolPath                = "./tools/nuget.exe",
-                                        Id                      = "Cake.Watch",
+                                        Id                      = "Cake.Watch_Advance",
                                         Version                 = version,
-                                        Title                   = "Cake.Watch",
+                                        Title                   = "Cake_Watch_Advance",
                                         Authors                 = new[] {"wk"},
                                         Owners                  = new[] {"wk"},
-                                        Description             = "Cake.Watch",
+                                        Description             = "Cake_Watch_Advance",
                                         //NoDefaultExcludes       = true,
                                         Summary                 = "Watch file change",
                                         ProjectUrl              = new Uri("https://github.com/cake-addin/cake-watch"),
@@ -77,4 +78,7 @@ Task("Create-Nuget-Package")
         NuGetPack(settings);
     });
 
-RunTarget("Create-Nuget-Package");
+Task(target)
+ .IsDependentOn("Publish-Nuget");
+
+RunTarget(target);
