@@ -54,6 +54,7 @@ Param(
     [string[]]$ScriptArgs
 )
 
+Write-Host $Target
 Write-Host "Preparing to run build script..."
 
 $PSScriptRoot = split-path -parent $MyInvocation.MyCommand.Definition;

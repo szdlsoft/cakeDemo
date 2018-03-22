@@ -78,7 +78,7 @@ Task("Create-Nuget-Package")
         NuGetPack(settings);
     });
 
-Task(target)
+Task("Default")
  .IsDependentOn("Publish-Nuget");
 
 RunTarget(target);
